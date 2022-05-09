@@ -18,7 +18,7 @@ Just run the file with:
 
 to see an example from the previously mentioned website.
 
-The main function to use is [fp_growth](./FpGrowth.py#:~:text=fp_growth).
+The main function to use is [fp_growth](./FpGrowth.py#:~:text=%20fp_growth).
 
 # Testing
 One can compare the package given in this repo with the 
@@ -32,5 +32,5 @@ and then run:
 `python test\Test_FpGrwoth.py`
 
 You can also introduce your own tests by using the `test_own_algorithm` function in the source of the
-[test file](test/Test_FpGrowth.py#:~:text=test_own_algorithm).
+[test file](test/Test_FpGrowth.py#:~:text=%20test_own_algorithm).
 
