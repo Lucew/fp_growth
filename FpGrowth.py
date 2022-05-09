@@ -4,7 +4,7 @@ import requests
 import re
 from collections import Counter, OrderedDict, defaultdict
 from itertools import combinations
-
+from math import ceil
 
 def get_data() -> list[list]:
     """
@@ -227,7 +227,7 @@ def construct_tree(table, start_node_name: tuple = None, condition_support=0):
     return base_node, head_table, counter
 
 
-def count_frequent_patterns(table: list[set], condition: list = None, condition_support=0):
+def count_frequent_patterns(table: list[set], condition: list = None, condition_support=0, min_support=0):
     """
     This function recursively counts frequent patterns. It is able to support conditional trees.
 
@@ -310,9 +310,16 @@ def count_frequent_patterns(table: list[set], condition: list = None, condition_
                 if transaction:
                     conditional_table += [transaction] * node_counter
 
+            # stop building if the support is too small
+            if condition_support < min_support:
+                continue
+
             # call function recursively to build and traverse the next tree,
             # but now it is conditioned on certain items with a certain support
-            temp_frequent_patterns = count_frequent_patterns(conditional_table, condition + [item], condition_support)
+            temp_frequent_patterns = count_frequent_patterns(conditional_table,
+                                                             condition=condition + [item],
+                                                             condition_support=condition_support,
+                                                             min_support=min_support)
 
             # update the dict for all the frequent pattern counts
             for key, value in temp_frequent_patterns.items():
@@ -401,7 +408,7 @@ def fp_growth(table: list[list[str]], min_support=0.5):
     table = [set(transaction) for transaction in table]
 
     # start the frequent pattern counter
-    frequent_patterns = count_frequent_patterns(table)
+    frequent_patterns = count_frequent_patterns(table, min_support=ceil(len(table) * min_support))
 
     # throw away the less frequent patterns
     return {name: value for name, value in frequent_patterns.items() if value >= len(table) * min_support}
