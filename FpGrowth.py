@@ -342,6 +342,11 @@ def pretty_print_frequent_patterns(frequent_patterns: dict, number_of_transactio
     :return: None
     """
 
+    # check for empty input
+    if not frequent_patterns:
+        print('No frequent patterns found.')
+        return
+
     # save the column names
     columns = ['Pattern', 'Support', 'Support (%)']
 
