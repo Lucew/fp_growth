@@ -45,7 +45,7 @@ def get_data() -> list[list]:
     return table
 
 
-def count_items(table: list[list]) -> [OrderedDict, int]:
+def count_items(table: list[set]) -> [OrderedDict, int]:
     """
     This function creates a dictionary that contains counts for all the items in the transactions.
 
@@ -53,8 +53,8 @@ def count_items(table: list[list]) -> [OrderedDict, int]:
     :return: Returns an ordered dict for all items in descending item count order
     """
 
-    # flatten the two-dimensional list
-    all_items = [item for sublist in table for item in sublist]
+    # flatten the two-dimensional list (and take care of double orders by using the count
+    all_items = [item for sublist in table for item in set(sublist)]
 
     # count occurrences and sort them by descending counter
     counter = OrderedDict(Counter(all_items).most_common())
@@ -62,7 +62,7 @@ def count_items(table: list[list]) -> [OrderedDict, int]:
     return counter, len(table)
 
 
-def sort_transactions(table: list[list], counter: dict):
+def sort_transactions(table: list[set], counter: dict) -> list[list]:
     """
     This function sort a table of transactions according to the counter.
     :param table: the list of transactions.
@@ -70,6 +70,18 @@ def sort_transactions(table: list[list], counter: dict):
     :return: Sorted table of transactions.
     """
     return [sorted(transaction, key=lambda x: counter[x], reverse=True) for transaction in table]
+
+
+def sort_frequent_pattern_names(frequent_patterns: dict, counter: dict) -> dict:
+    """
+    This function sort the frequent pattern names according to their counter
+    :param frequent_patterns: a dict with frequent patterns as key and support as value
+    :param counter: a dict with the absolute counts of the items in the transaction table
+    :return: the frequent pattern dict but with the names in order
+    """
+    frequent_patterns = {', '.join(sorted(name.split(', '), key=lambda x: (counter[x], str(x)), reverse=True)): value
+                         for name, value in frequent_patterns.items()}
+    return frequent_patterns
 
 
 class Node:
@@ -215,7 +227,7 @@ def construct_tree(table, start_node_name: tuple = None, condition_support=0):
     return base_node, head_table, counter
 
 
-def count_frequent_patterns(table: list[list], condition: list = None, condition_support=0):
+def count_frequent_patterns(table: list[set], condition: list = None, condition_support=0):
     """
     This function recursively counts frequent patterns. It is able to support conditional trees.
 
@@ -234,6 +246,10 @@ def count_frequent_patterns(table: list[list], condition: list = None, condition
     # make the condition
     if condition is None:
         condition = []
+
+    # if we have a tree with a frequent pattern as a root node, we need to include this as well
+    if tree.value is not None:
+        frequent_patterns[', '.join(sorted(tree.value))] += tree.base_value
 
     # look if the tree is singular and if it is make the frequent pairs
     if tree.singular:
@@ -265,10 +281,6 @@ def count_frequent_patterns(table: list[list], condition: list = None, condition
                 # add combination to list
                 # list_combinations += [(support, tree.value, combi)]
                 frequent_patterns[', '.join(sorted(combi))] += support
-
-        # if we have a tree with a frequent pattern as a root node, we need to include this as well
-        if tree.value is not None:
-            frequent_patterns[', '.join(sorted(tree.value))] += tree.base_value
 
     # recursively construct conditional trees if the current tree is not singular
     else:
@@ -309,29 +321,8 @@ def count_frequent_patterns(table: list[list], condition: list = None, condition
     # sort the frequent patterns according to the counter (only if we are at highest level of recursion and therefore
     # have no condition
     if not condition:
-        frequent_patterns = {', '.join(sorted(name.split(', '), key=lambda x: counter[x], reverse=True)): value
-                             for name, value in frequent_patterns.items()}
+        frequent_patterns = sort_frequent_pattern_names(frequent_patterns, counter)
     return frequent_patterns
-
-
-def fp_growth(table: list[list], min_support=0.5):
-    """
-    This function implements the fp growth algorithm. The items in the transactions need be given as a string 
-    representation!
-    
-    :param table: a list of transactions (list of lists, where the second level list is a list of items per transation)
-    :param min_support: the minimum support for frequent patters in percentage (between 0 and 1)
-    :return: a dict of frequent patterns
-    """
-
-    # make an assert statement about the support
-    assert 0 <= min_support <= 1, f'[min_support] should be between 0 and 1. Currently it is [{min_support}].'
-
-    # start the frequent pattern counter
-    frequent_patterns = count_frequent_patterns(table)
-
-    # throw away the less frequent patterns
-    return {name: value for name, value in frequent_patterns.items() if value >= len(table)*min_support}
 
 
 def pretty_print_frequent_patterns(frequent_patterns: dict, number_of_transactions: int, percentage_precision=2):
@@ -385,6 +376,29 @@ def pretty_print_frequent_patterns(frequent_patterns: dict, number_of_transactio
     print(print_string)
 
 
+def fp_growth(table: list[list], min_support=0.5):
+    """
+    This function implements the fp growth algorithm. The items in the transactions need be given as a string
+    representation!
+
+    :param table: a list of transactions (list of lists, where the second level list is a list of items per transation)
+    :param min_support: the minimum support for frequent patters in percentage (between 0 and 1)
+    :return: a dict of frequent patterns
+    """
+
+    # make an assert statement about the support
+    assert 0 <= min_support <= 1, f'[min_support] should be between 0 and 1. Currently it is [{min_support}].'
+
+    # take care of double orders in the table
+    table = [set(transaction) for transaction in table]
+
+    # start the frequent pattern counter
+    frequent_patterns = count_frequent_patterns(table)
+
+    # throw away the less frequent patterns
+    return {name: value for name, value in frequent_patterns.items() if value > len(table) * min_support}
+
+
 def example_use():
     # get the data from the website
     table = get_data()
@@ -404,12 +418,12 @@ def example_use2():
                ['Corn', 'Onion', 'Onion', 'Kidney Beans', 'Ice cream', 'Eggs']]
 
     # get the results
-    result = fp_growth(dataset, min_support=0.6)
+    result = fp_growth(dataset, min_support=0.2)
 
     # pretty print the results
     pretty_print_frequent_patterns(result, len(dataset))
 
 
 if __name__ == '__main__':
-    example_use()
+    # example_use()
     example_use2()
