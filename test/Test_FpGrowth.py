@@ -132,9 +132,10 @@ def main():
 
     # test the datasets
     test_own_algorithm(dataset, min_support=0.000000001)
+    test_own_algorithm(dataset, min_support=0.60)
     test_own_algorithm(dataset2, min_support=0.000000001)
     test_own_algorithm(dataset3, min_support=0.000000001)
-    test_own_algorithm(get_KDD_dataset()[:50], min_support=0.40)
+    test_own_algorithm(get_KDD_dataset()[:1000], min_support=0.40)
 
 
 if __name__ == '__main__':
