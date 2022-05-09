@@ -1,10 +1,14 @@
 # this file contains a famous reference library for the fp growth algorithm. It will be used to test my own script.
 import mlxtend.frequent_patterns
-import pandas as pd
 from mlxtend.preprocessing import TransactionEncoder
 from FpGrowth import get_data, fp_growth, count_items, sort_frequent_pattern_names, pretty_print_frequent_patterns
 import deepdiff
 from time import perf_counter
+import tempfile
+import sqlite3
+import os.path
+import urllib.request
+import pandas as pd
 
 
 def get_mlxtend_result(dataset, min_support=0.5):
@@ -74,6 +78,42 @@ def test_own_algorithm(dataset: list[list], min_support=0.2):
         print(f'Everything works fine! Own time: {own_time*1e3:0.2f} ms. Reference time: {ref_time*1e3:0.2f} ms.')
 
 
+def get_KDD_dataset():
+    # Create a temporary directory
+    dataset_folder = tempfile.mkdtemp()
+
+    # Build path to database
+    database_path = os.path.join(dataset_folder, "adventure-works.db")
+
+    # Get the database
+    urllib.request.urlretrieve(
+        "https://github.com/FAU-CS6/KDD-Databases/raw/main/AdventureWorks/adventure-works.db",
+        database_path,
+    )
+
+    # Open connection to the adventure-works.db
+    connection = sqlite3.connect(database_path)
+
+    order_df = pd.read_sql_query(
+        "SELECT p.ProductID,p.Name,d.PurchaseOrderID,d.PurchaseOrderDetailID,d.ProductID "
+        "FROM Product p "
+        "JOIN PurchaseOrderDetail d ON p.ProductID = d.ProductID "
+        "JOIN PurchaseOrderHeader h ON d.PurchaseOrderID = h.PurchaseOrderID ",
+        connection,
+        index_col="PurchaseOrderDetailID",
+    )
+
+    # get the unique values from the dataframe
+    order_ids = order_df['PurchaseOrderID'].unique()
+
+    # make a list of lists
+    order_table = []
+    for order_id in order_ids:
+        order_table.append(list(order_df[order_df['PurchaseOrderID'] == order_id]['Name']))
+
+    return order_table
+
+
 def main():
     dataset = [['Milk', 'Onion', 'Nutmeg', 'Kidney Beans', 'Eggs', 'Yogurt'],
                ['Dill', 'Onion', 'Nutmeg', 'Kidney Beans', 'Eggs', 'Yogurt'],
@@ -94,6 +134,7 @@ def main():
     test_own_algorithm(dataset, min_support=0.000000001)
     test_own_algorithm(dataset2, min_support=0.000000001)
     test_own_algorithm(dataset3, min_support=0.000000001)
+    test_own_algorithm(get_KDD_dataset()[:50], min_support=0.40)
 
 
 if __name__ == '__main__':

@@ -240,7 +240,7 @@ def count_frequent_patterns(table: list[set], condition: list = None, condition_
     # build the first tree
     tree, head_table, counter = construct_tree(table, condition, condition_support)
 
-    # make all combinations including the support
+    # dict to save the frequent patterns
     frequent_patterns = defaultdict(int)
 
     # make the condition
