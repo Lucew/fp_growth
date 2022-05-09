@@ -18,6 +18,8 @@ Just run the file with:
 
 to see an example from the previously mentioned website.
 
+The main function to use is [fp_growth](FpGrowth.py#:~:text=fp_growth).
+
 # Testing
 One can compare the package given in this repo with the 
 [mlxtend implementation](http://rasbt.github.io/mlxtend/user_guide/frequent_patterns/fpgrowth/). In order to
