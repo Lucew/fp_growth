@@ -140,7 +140,7 @@ def main():
     test_own_algorithm(dataset, min_support=0.60)
     test_own_algorithm(dataset2, min_support=0.000000001)
     test_own_algorithm(dataset3, min_support=0.000000001)
-    test_own_algorithm(get_KDD_dataset(), min_support=0.025, verbose=True)
+    test_own_algorithm(get_KDD_dataset(), min_support=0.02, verbose=True)
 
 
 if __name__ == '__main__':

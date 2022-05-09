@@ -332,7 +332,8 @@ def count_frequent_patterns(table: list[set], condition: list = None, condition_
     return frequent_patterns
 
 
-def pretty_print_frequent_patterns(frequent_patterns: dict, number_of_transactions: int, percentage_precision=2):
+def pretty_print_frequent_patterns(frequent_patterns: dict, number_of_transactions: int, percentage_precision=2,
+                                   sorted_print=True):
     """
     This function prints a human-readable version of the frequent patterns from the fp growth algorithm.
 
@@ -346,6 +347,10 @@ def pretty_print_frequent_patterns(frequent_patterns: dict, number_of_transactio
     if not frequent_patterns:
         print('No frequent patterns found.')
         return
+
+    # sort the frequent patterns if required
+    if sorted_print:
+        frequent_patterns = OrderedDict(sorted(frequent_patterns.items(), key=lambda x: x[1], reverse=True))
 
     # save the column names
     columns = ['Pattern', 'Support', 'Support (%)']
