@@ -30,5 +30,5 @@ and then run:
 `python test\Test_FpGrwoth.py`
 
 You can also introduce your own tests by using the `test_own_algorithm` function in the source of the
-[test file](test/TestFpGrowth.py).
+[test file](test/Test_FpGrowth.py).
 
