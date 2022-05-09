@@ -264,11 +264,11 @@ def count_frequent_patterns(table: list[list], condition: list = None, condition
 
                 # add combination to list
                 # list_combinations += [(support, tree.value, combi)]
-                frequent_patterns[''.join(sorted(combi))] += support
+                frequent_patterns[', '.join(sorted(combi))] += support
 
         # if we have a tree with a frequent pattern as a root node, we need to include this as well
-        if tree.value is not None and len(tree.value) > 1:
-            frequent_patterns[''.join(sorted(tree.value))] += tree.base_value
+        if tree.value is not None:
+            frequent_patterns[', '.join(sorted(tree.value))] += tree.base_value
 
     # recursively construct conditional trees if the current tree is not singular
     else:
@@ -308,8 +308,8 @@ def count_frequent_patterns(table: list[list], condition: list = None, condition
 
     # sort the frequent patterns according to the counter (only if we are at highest level of recursion and therefore
     # have no condition
-    if condition_support == 0:
-        frequent_patterns = {''.join(sorted(name[:], key=lambda x: counter[x])): value
+    if not condition:
+        frequent_patterns = {', '.join(sorted(name.split(', '), key=lambda x: counter[x], reverse=True)): value
                              for name, value in frequent_patterns.items()}
     return frequent_patterns
 
@@ -348,7 +348,7 @@ def pretty_print_frequent_patterns(frequent_patterns: dict, number_of_transactio
     columns = ['Pattern', 'Support', 'Support (%)']
 
     # get the string representation of all frequent patterns
-    representations = [len(value) for patterns in frequent_patterns for value in patterns]
+    representations = [len(str(value)) for patterns in frequent_patterns.items() for value in patterns]
 
     # get the maximum length of counters and names
     max_length_names = max(representations[::2])
@@ -362,7 +362,6 @@ def pretty_print_frequent_patterns(frequent_patterns: dict, number_of_transactio
     percentage_format = f'0.{percentage_precision}%'
     max_length_percent = max(len(f'{0.5:{percentage_format}}'), len(columns[2]))
     percentage_format = f'{max_length_percent}.{percentage_format[2:]}'
-    print(percentage_format)
 
     # make the header of the table
     filler_string = '|-' + '-' * max_length_names + '-+-' + '-' * max_length_counter + '-+-' + '-' * max_length_percent \
@@ -397,5 +396,20 @@ def example_use():
     pretty_print_frequent_patterns(res, len(table))
 
 
+def example_use2():
+    dataset = [['Milk', 'Onion', 'Nutmeg', 'Kidney Beans', 'Eggs', 'Yogurt'],
+               ['Dill', 'Onion', 'Nutmeg', 'Kidney Beans', 'Eggs', 'Yogurt'],
+               ['Milk', 'Apple', 'Kidney Beans', 'Eggs'],
+               ['Milk', 'Unicorn', 'Corn', 'Kidney Beans', 'Yogurt'],
+               ['Corn', 'Onion', 'Onion', 'Kidney Beans', 'Ice cream', 'Eggs']]
+
+    # get the results
+    result = fp_growth(dataset, min_support=0.6)
+
+    # pretty print the results
+    pretty_print_frequent_patterns(result, len(dataset))
+
+
 if __name__ == '__main__':
     example_use()
+    example_use2()
