@@ -376,7 +376,7 @@ def pretty_print_frequent_patterns(frequent_patterns: dict, number_of_transactio
     print(print_string)
 
 
-def fp_growth(table: list[list], min_support=0.5):
+def fp_growth(table: list[list[str]], min_support=0.5):
     """
     This function implements the fp growth algorithm. The items in the transactions need be given as a string
     representation!
@@ -388,6 +388,14 @@ def fp_growth(table: list[list], min_support=0.5):
 
     # make an assert statement about the support
     assert 0 <= min_support <= 1, f'[min_support] should be between 0 and 1. Currently it is [{min_support}].'
+
+    # check the given dataset
+    for trans_counter, transaction in enumerate(table):
+        assert isinstance(transaction, list), f'The input [table] needs to be a list of transactions.' \
+                                              f' Current type: {type(transaction)} for table[{trans_counter}].'
+        for item_counter, item in enumerate(transaction):
+            assert isinstance(item, str), f'The items in each transaction need to to be strings.' \
+                                          f' Current type: {type(item)} for table[{trans_counter}][{item_counter}].'
 
     # take care of double orders in the table
     table = [set(transaction) for transaction in table]
@@ -425,5 +433,5 @@ def example_use2():
 
 
 if __name__ == '__main__':
-    # example_use()
-    example_use2()
+    example_use()
+    # example_use2()
