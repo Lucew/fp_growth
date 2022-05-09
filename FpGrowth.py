@@ -396,7 +396,7 @@ def fp_growth(table: list[list], min_support=0.5):
     frequent_patterns = count_frequent_patterns(table)
 
     # throw away the less frequent patterns
-    return {name: value for name, value in frequent_patterns.items() if value > len(table) * min_support}
+    return {name: value for name, value in frequent_patterns.items() if value >= len(table) * min_support}
 
 
 def example_use():
