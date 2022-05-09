@@ -8,6 +8,16 @@ from time import perf_counter
 
 
 def get_mlxtend_result(dataset, min_support=0.5):
+    """
+    Wrapper around the fp growth mlxtend implementation.
+
+    :param dataset: the dataset of transactions
+    :param min_support: the minimum support value
+    :return: dictionary of frequent patterns, where the keys are item sets and the values are the support
+    """
+
+    #  make an assert statement about the support
+    assert 0 <= min_support <= 1, f'[min_support] should be between 0 and 1. Currently it is [{min_support}].'
 
     # make the counter
     counter, number_of_transactions = count_items(dataset)
@@ -32,6 +42,17 @@ def get_mlxtend_result(dataset, min_support=0.5):
 
 
 def test_own_algorithm(dataset: list[list], min_support=0.2):
+    """
+    This function compares the output of the implementation given in this repository and a reference implementation from
+    mlxtend (http://rasbt.github.io/mlxtend/user_guide/frequent_patterns/fpgrowth/).
+
+    :param dataset: the dataset to compare the algorithms on
+    :param min_support: the minimum support in percent
+    :return: None
+    """
+
+    #  make an assert statement about the support
+    assert 0 <= min_support <= 1, f'[min_support] should be between 0 and 1. Currently it is [{min_support}].'
 
     # get the result from own implementation
     timed = perf_counter()
@@ -48,6 +69,7 @@ def test_own_algorithm(dataset: list[list], min_support=0.2):
         print('There is a difference between the results!')
         diff = deepdiff.DeepDiff(reference_result, own_result)
         print(diff.pretty())
+        raise ValueError('Implementation and reference are not the same.')
     else:
         print(f'Everything works fine! Own time: {own_time*1e3:0.2f} ms. Reference time: {ref_time*1e3:0.2f} ms.')
 
