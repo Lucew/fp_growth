@@ -85,7 +85,11 @@ def sort_frequent_pattern_names(frequent_patterns: dict, counter: dict) -> dict:
     return frequent_patterns
 
 
-class Node:
+class Node(object):
+
+    # add slots to impede the creation of object __dict__ in order to reduce the memory footprint of each tree
+    # comes with the cost du not store attributes dynamically, but we don't need that anyway.
+    __slots__ = 'parent', 'value', 'children', 'counter', 'singular', 'base_value'
 
     def __init__(self, parent, value, base_value=0):
         """
@@ -375,8 +379,8 @@ def pretty_print_frequent_patterns(frequent_patterns: dict, number_of_transactio
     percentage_format = f'{max_length_percent}.{percentage_format[2:]}'
 
     # make the header of the table
-    filler_string = '|-' + '-' * max_length_names + '-+-' + '-' * max_length_counter + '-+-' + '-' * max_length_percent \
-                    + '-|\n'
+    filler_string = '|-' + '-' * max_length_names + '-+-' + '-' * max_length_counter + '-+-'\
+                    + '-' * max_length_percent + '-|\n'
     print_string = filler_string
     print_string += f'| {columns[0]:<{max_length_names}} | ' \
                     f'{columns[1]:<{max_length_counter}} | ' \
