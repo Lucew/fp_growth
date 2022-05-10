@@ -234,6 +234,7 @@ def count_frequent_patterns(table: list[set], condition: list = None, condition_
     :param table: the table of transactions
     :param condition: the condition for the current tree
     :param condition_support: the support of the current condition
+    :param min_support: the minimal support as int
     :return: dict of frequent patterns with their support values
     """
 
@@ -340,6 +341,7 @@ def pretty_print_frequent_patterns(frequent_patterns: dict, number_of_transactio
     :param frequent_patterns: a dict of frequent patterns where the values are their support.
     :param number_of_transactions: the total number of transactions as int.
     :param percentage_precision: the amount of decimals for the percentage value
+    :param sorted_print: boolean value to activate sorted printing according to the support (descending)
     :return: None
     """
 
