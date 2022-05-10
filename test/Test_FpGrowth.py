@@ -134,13 +134,14 @@ def main():
                 ['Milk', 'Beer', 'Rice'],
                 ['Milk', 'Beer'],
                 ['Apple', 'Bananas']]
+    dataset4 = get_KDD_dataset()
 
     # test the datasets
     test_own_algorithm(dataset, min_support=0.000000001)
     test_own_algorithm(dataset, min_support=0.60)
     test_own_algorithm(dataset2, min_support=0.000000001)
     test_own_algorithm(dataset3, min_support=0.000000001)
-    test_own_algorithm(get_KDD_dataset(), min_support=0.02, verbose=True)
+    test_own_algorithm(dataset4, min_support=0.02, verbose=True)
 
 
 if __name__ == '__main__':

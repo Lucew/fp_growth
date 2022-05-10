@@ -6,6 +6,7 @@ from collections import Counter, OrderedDict, defaultdict
 from itertools import combinations
 from math import ceil
 
+
 def get_data() -> list[list]:
     """
     This function can be used to extract transaction data from a website if the data is contained in a standard html
