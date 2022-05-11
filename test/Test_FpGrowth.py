@@ -60,7 +60,7 @@ def get_mlxtend_result(dataset, min_support=0.5):
     assert 0 <= min_support <= 1, f'[min_support] should be between 0 and 1. Currently it is [{min_support}].'
 
     # make the counter
-    counter, number_of_transactions = count_items(dataset)
+    counter, number_of_transactions = count_items([list(set(transaction)) for transaction in dataset])
 
     # make the encoding
     te = TransactionEncoder()
@@ -72,7 +72,7 @@ def get_mlxtend_result(dataset, min_support=0.5):
     result = mlxtend.frequent_patterns.fpgrowth(df, min_support=min_support, use_colnames=True)
 
     # make frequent pattern dict from the result
-    frequent_patterns = {', '.join(pattern['itemsets']): int(pattern['support']*number_of_transactions)
+    frequent_patterns = {pattern['itemsets']: round(pattern['support']*number_of_transactions)
                          for _, pattern in result.iterrows()}
 
     # sort the frequent patterns
@@ -94,21 +94,22 @@ def test_own_algorithm(dataset: list[list], min_support=0.2, verbose=False):
     #  make an assert statement about the support
     assert 0 <= min_support <= 1, f'[min_support] should be between 0 and 1. Currently it is [{min_support}].'
 
-    # get the result from own implementation
-    timed = perf_counter()
-    own_result = fp_growth(dataset, min_support=min_support)
-    own_time = perf_counter() - timed
-
     # get the reference result
     timed = perf_counter()
     reference_result = get_mlxtend_result(dataset, min_support=min_support)
     ref_time = perf_counter() - timed
 
+    # get the result from own implementation
+    timed = perf_counter()
+    own_result = fp_growth(dataset, min_support=min_support)
+    own_time = perf_counter() - timed
+
     # compare the two dicts
     if not reference_result == own_result:
-        print('There is a difference between the results!')
+        print('There is a difference between the results! The print goes from reference to own.')
         diff = deepdiff.DeepDiff(reference_result, own_result)
         print(diff.pretty())
+        print(f'Own time: {own_time*1e3:0.2f} ms. Reference time: {ref_time*1e3:0.2f} ms.')
         raise ValueError('Implementation and reference are not the same.')
     else:
         print(f'Everything works fine! Own time: {own_time*1e3:0.2f} ms. Reference time: {ref_time*1e3:0.2f} ms.')
@@ -136,12 +137,18 @@ def main():
                 ['Apple', 'Bananas']]
     dataset4 = get_KDD_dataset()
 
+    # make a print to see when tests are started
+    print('Tests will be starting: \n')
+
     # test the datasets
     test_own_algorithm(dataset, min_support=0.000000001)
     test_own_algorithm(dataset, min_support=0.60)
     test_own_algorithm(dataset2, min_support=0.000000001)
+    test_own_algorithm(dataset2, min_support=0.7)
     test_own_algorithm(dataset3, min_support=0.000000001)
+    test_own_algorithm(dataset3, min_support=0.2)
     test_own_algorithm(dataset4, min_support=0.02, verbose=True)
+    test_own_algorithm(dataset4, min_support=0.005)
 
 
 if __name__ == '__main__':
