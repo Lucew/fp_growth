@@ -1,49 +1,8 @@
 # this implements the FP growth algorithm
 # it uses https://www.mygreatlearning.com/blog/understanding-fp-growth-algorithm/ as an example for values
-import requests
-import re
 from collections import Counter, OrderedDict, defaultdict
 from itertools import combinations
 from math import ceil
-
-
-def get_data() -> list[list]:
-    """
-    This function can be used to extract transaction data from a website if the data is contained in a standard html
-    table with two columns (transcation ID, item list). The item list needs to be comma separated. The table should have
-    n+1 rows. Where the first row (+1) is are the column names and the other n are n transactions.
-
-    :return: a transaction list, where the second level lists (list[**LISTS**]) is a list of items and the first level
-    list is the list of transactions.
-    """
-
-    # make a header
-    headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)'
-                             ' Chrome/75.0.3770.80 Safari/537.36'}
-
-    # get the website text
-    response = requests.get('https://www.mygreatlearning.com/blog/understanding-fp-growth-algorithm/', headers=headers)
-
-    # find all tables
-    table = re.findall(r'<tbody>.*</tbody>',
-                       response.text)
-    # check whether is has found all expected tables
-    assert len(table) == 4, 'There has been something wrong with parsing the website.'
-
-    # find all rows
-    table = re.findall(r'<tr>.*?</tr>', table[0])
-
-    # delete first row
-    table = table[1:]
-
-    # find all columns
-    column_re = re.compile(r'<td>.*?</td>')
-    table = [[column[4:-5].replace(' ', '').split(',') for column in re.findall(column_re, row)] for row in table]
-
-    # get rid of transaction names
-    table = [row[1] for row in table]
-
-    return table
 
 
 def count_items(table: list[list[str]]) -> [OrderedDict, int]:
@@ -453,17 +412,6 @@ def fp_growth(table: list[list[str]], min_support=0.5):
 
 
 def example_use():
-    # get the data from the website
-    table = get_data()
-    
-    # get the results
-    res = fp_growth(table, 0.33)
-
-    # print the frequent patterns in a readable way
-    pretty_print_frequent_patterns(res, len(table))
-
-
-def example_use2():
     dataset = [['Milk', 'Onion', 'Nutmeg', 'Kidney Beans', 'Eggs', 'Yogurt'],
                ['Dill', 'Onion', 'Nutmeg', 'Kidney Beans', 'Eggs', 'Yogurt'],
                ['Milk', 'Apple', 'Kidney Beans', 'Eggs'],
@@ -479,4 +427,3 @@ def example_use2():
 
 if __name__ == '__main__':
     example_use()
-    # example_use2()
