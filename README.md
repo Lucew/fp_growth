@@ -1,4 +1,14 @@
-![Banner](images/banner.jpg)
+<p align=center>
+    <img src="images/banner.jpg" alt="FP growth visual">
+</p>
+
+<p align=center>
+    <a target="_blank" href="#" title="language count"><img src="https://img.shields.io/github/languages/count/Lucew/fp_growth" alt=""></a>
+    <a target="_blank" href="#" title="top language"><img src="https://img.shields.io/github/languages/top/Lucew/fp_growth?color=orange" alt=""></a>
+    <a target="_blank" href="https://opensource.org/licenses/MIT" title="License: MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt=""></a>
+    <a target="_blank" href="#" title="repo size"><img src="https://img.shields.io/github/repo-size/Lucew/fp_growth" alt=""></a>
+    <a target="_blank" href="https://makeapullrequest.com" title="PRs Welcome"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt=""></a>
+</p>
 # Pure Python FP Growth
 This project is a simple and pure Python implementation of the FP-Grwoth algorithm used for knowledge discovery in 
 databases. I implemented this as a learning example for recursive tree algorithms.
