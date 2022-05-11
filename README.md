@@ -37,3 +37,14 @@ and then run:
 You can also introduce your own tests by using the `test_own_algorithm` function in the source of the
 [test file](test/Test_FpGrowth.py#:~:text=def%20test_own_algorithm).
 
+# Performance comparison
+
+This implementation is slightly faster than the Mlxtend implementation (~1.5x). But this might be due to the
+conversion of the data list to a pandas dataframe and the transformation and ordering of the result to support 
+direct comparison. Imho one could say performance is comparable.
+
+Speed comparison with another
+[user implementation](https://github.com/chonyy/fpgrowth_py) is hard to make, since this implementation tracks
+item support already during the algorithm. While the [other implementation](https://github.com/chonyy/fpgrowth_py)
+computes the support later. In cases, where there are a lot of frequent patterns (lower min_support), the implmentation
+in this repository is much faster (~10x-20x).
