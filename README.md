@@ -9,6 +9,7 @@
     <a target="_blank" href="#" title="repo size"><img src="https://img.shields.io/github/repo-size/Lucew/fp_growth" alt=""></a>
     <a target="_blank" href="https://makeapullrequest.com" title="PRs Welcome"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt=""></a>
 </p>
+
 # Pure Python FP Growth
 This project is a simple and pure Python implementation of the FP-Grwoth algorithm used for knowledge discovery in 
 databases. I implemented this as a learning example for recursive tree algorithms.
