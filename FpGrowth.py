@@ -4,7 +4,7 @@ import requests
 import re
 from collections import Counter, OrderedDict, defaultdict
 from itertools import combinations
-from math import cei
+from math import ceil
 
 
 def get_data() -> list[list]:
