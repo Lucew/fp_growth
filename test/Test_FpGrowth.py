@@ -1,7 +1,7 @@
 # this file contains a famous reference library for the fp growth algorithm. It will be used to test my own script.
 import mlxtend.frequent_patterns
 from mlxtend.preprocessing import TransactionEncoder
-from FpGrowth import get_data, fp_growth, count_items, sort_frequent_pattern_names, pretty_print_frequent_patterns
+from FpGrowth import fp_growth, count_items, sort_frequent_pattern_names, pretty_print_frequent_patterns
 import deepdiff
 from time import perf_counter
 import tempfile
@@ -9,6 +9,47 @@ import sqlite3
 import os.path
 import urllib.request
 import pandas as pd
+import requests
+import re
+
+
+def get_data() -> list[list]:
+    """
+    This function can be used to extract transaction data from a website if the data is contained in a standard html
+    table with two columns (transcation ID, item list). The item list needs to be comma separated. The table should have
+    n+1 rows. Where the first row (+1) is are the column names and the other n are n transactions.
+
+    :return: a transaction list, where the second level lists (list[**LISTS**]) is a list of items and the first level
+    list is the list of transactions.
+    """
+
+    # make a header
+    headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)'
+                             ' Chrome/75.0.3770.80 Safari/537.36'}
+
+    # get the website text
+    response = requests.get('https://www.mygreatlearning.com/blog/understanding-fp-growth-algorithm/', headers=headers)
+
+    # find all tables
+    table = re.findall(r'<tbody>.*</tbody>',
+                       response.text)
+    # check whether is has found all expected tables
+    assert len(table) == 4, 'There has been something wrong with parsing the website.'
+
+    # find all rows
+    table = re.findall(r'<tr>.*?</tr>', table[0])
+
+    # delete first row
+    table = table[1:]
+
+    # find all columns
+    column_re = re.compile(r'<td>.*?</td>')
+    table = [[column[4:-5].replace(' ', '').split(',') for column in re.findall(column_re, row)] for row in table]
+
+    # get rid of transaction names
+    table = [row[1] for row in table]
+
+    return table
 
 
 def get_KDD_dataset():
@@ -136,6 +177,7 @@ def main():
                 ['Milk', 'Beer'],
                 ['Apple', 'Bananas']]
     dataset4 = get_KDD_dataset()
+    print(dataset2)
 
     # make a print to see when tests are started
     print('Tests will be starting: \n')
