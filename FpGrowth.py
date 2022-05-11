@@ -118,9 +118,9 @@ class Node(object):
 
     # add slots to impede the creation of object __dict__ in order to reduce the memory footprint of each tree
     # comes with the cost du not store attributes dynamically, but we don't need that anyway.
-    __slots__ = 'parent', 'value', 'children', 'counter', 'singular', 'base_value'
+    __slots__ = 'parent', 'value', 'children', 'counter', 'singular'
 
-    def __init__(self, parent, value, base_value=0):
+    def __init__(self, parent, value):
         """
         This function creates a base node for a tree. Please use base_node.adopt() for child creation!
 
@@ -135,7 +135,6 @@ class Node(object):
         self.children = {}  # a dict of children, where we will save them with their names
         self.counter = 0  # the counter how many times the item exists in the tree
         self.singular = True  # value to store whether the tree is singular (only one branch)
-        self.base_value = base_value  # a value to store support for conditional trees
 
     def adopt(self, value):
         """
@@ -228,7 +227,7 @@ def construct_tree(table: list[list[str]], start_node_name: tuple = None, condit
         table = sort_transactions(table, counter)
 
     # create the base node and the condition support
-    base_node = Node(None, start_node_name, base_value=condition_support)
+    base_node = Node(None, start_node_name)
 
     # construct the tree
     for transaction in table:
