@@ -127,7 +127,16 @@ def get_mlxtend_result(dataset, min_support=0.5):
 
     result = mlxtend.frequent_patterns.fpgrowth(df, min_support=min_support, use_colnames=True)
 
-    return result
+    # make the counter
+    counter, number_of_transactions = count_items([list(set(transaction)) for transaction in dataset])
+    # make frequent pattern dict from the result
+    frequent_patterns = {pattern['itemsets']: round(pattern['support'] * number_of_transactions)
+                         for _, pattern in result.iterrows()}
+
+    # sort the frequent patterns
+    frequent_patterns = sort_frequent_pattern_names(frequent_patterns, counter)
+
+    return frequent_patterns
 
 
 def test_own_algorithm(dataset: list[list], min_support=0.2, verbose=False):
@@ -147,14 +156,6 @@ def test_own_algorithm(dataset: list[list], min_support=0.2, verbose=False):
     timed = perf_counter()
     reference_result = get_mlxtend_result(dataset, min_support=min_support)
     ref_time = perf_counter() - timed
-    # make the counter
-    counter, number_of_transactions = count_items([list(set(transaction)) for transaction in dataset])
-    # make frequent pattern dict from the result
-    frequent_patterns = {pattern['itemsets']: round(pattern['support'] * number_of_transactions)
-                         for _, pattern in reference_result.iterrows()}
-
-    # sort the frequent patterns
-    reference_result = sort_frequent_pattern_names(frequent_patterns, counter)
 
     # get the result from own implementation ---------------------------------------------------------------------------
     timed = perf_counter()
