@@ -324,8 +324,7 @@ def count_frequent_patterns(table: list[list], condition: list = None, condition
 
                 # add combination to list and use frozensets as keys as they are unordered and hashable
                 # https://stackoverflow.com/questions/46633065/multiples-keys-dictionary-where-key-order-doesnt-matter
-                if support > 0:
-                    frequent_patterns[frozenset(combi)] += support
+                frequent_patterns[frozenset(combi)] += support
 
     # recursively construct conditional trees if the current tree is not singular
     else:
@@ -364,8 +363,7 @@ def count_frequent_patterns(table: list[list], condition: list = None, condition
             # once we do construct a subtree, we need to add the condition to the counter and use frozensets as keys as
             # they are unordered and hashable
             # https://stackoverflow.com/questions/46633065/multiples-keys-dictionary-where-key-order-doesnt-matter
-            if current_condition_support > 0:
-                frequent_patterns[frozenset(new_condition)] += current_condition_support
+            frequent_patterns[frozenset(new_condition)] += current_condition_support
 
             # call function recursively to build and traverse the next tree,
             # but now it is conditioned on certain items with a certain support
