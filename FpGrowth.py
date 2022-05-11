@@ -271,7 +271,8 @@ def construct_tree(table: list[list[str]], start_node_name: tuple = None, condit
     return base_node, head_table, counter
 
 
-def count_frequent_patterns(table: list[list], condition: list = None, condition_support=0, min_support=0):
+def count_frequent_patterns(table: list[list], condition: list = None, condition_support=0, min_support=0,
+                            frequent_patterns: dict = None):
     """
     This function recursively counts frequent patterns. It is able to support conditional trees.
 
@@ -279,6 +280,7 @@ def count_frequent_patterns(table: list[list], condition: list = None, condition
     :param condition: the condition for the current tree
     :param condition_support: the support of the current condition
     :param min_support: the minimal support as int
+    :param frequent_patterns: the dict of frequent patterns where the keys are frequent items and values are numbers
     :return: dict of frequent patterns with their support values
     """
 
@@ -286,7 +288,8 @@ def count_frequent_patterns(table: list[list], condition: list = None, condition
     tree, head_table, counter = construct_tree(table, condition, condition_support, min_support=min_support)
 
     # dict to save the frequent patterns
-    frequent_patterns = defaultdict(int)
+    if frequent_patterns is None:
+        frequent_patterns = defaultdict(int)
 
     # make the condition
     if condition is None:
@@ -366,14 +369,11 @@ def count_frequent_patterns(table: list[list], condition: list = None, condition
 
             # call function recursively to build and traverse the next tree,
             # but now it is conditioned on certain items with a certain support
-            temp_frequent_patterns = count_frequent_patterns(conditional_table,
-                                                             condition=new_condition,
-                                                             condition_support=current_condition_support,
-                                                             min_support=min_support)
-
-            # update the dict for all the frequent pattern counts
-            for key, value in temp_frequent_patterns.items():
-                frequent_patterns[key] += value
+            _ = count_frequent_patterns(conditional_table,
+                                        condition=new_condition,
+                                        condition_support=current_condition_support,
+                                        min_support=min_support,
+                                        frequent_patterns=frequent_patterns)
 
     # sort the frequent patterns according to the counter (only if we are at highest level of recursion and therefore
     # have no condition
