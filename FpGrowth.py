@@ -246,26 +246,6 @@ def construct_tree(table: list[list[str]], start_node_name: tuple = None, condit
         # increment the counters of nodes in transaction branch after transaction is completed
         current_node.increment()
 
-    # include this check if you want to test the tree building in the algorithm. Otherwise, keep it commented.
-    """
-    # get a count of the current table
-    counter, number = count_items(table)
-    
-    # check all nodes and convert set to list. We need it to be a set in the first place to not include nodes several
-    # times. For return statement it needs to be a list of nodes, so we can index those nodes.
-    for value, count in counter.items():
-        if count >= min_support:
-            # check all item nodes
-            assert sum([node.counter for node in head_table[value]]) == count, \
-                f'Item {value} has not the right amount in tree.'
-
-            # check base node
-            assert base_node.counter == len(table), 'Not all transactions have been build in the tree.'
-
-            # convert set of nodes to list
-            head_table[value] = list(head_table[value])
-    """
-
     return base_node, head_table, counter
 
 
