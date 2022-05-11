@@ -13,6 +13,7 @@
 This project is a simple and pure Python implementation of the FP-Grwoth algorithm used for knowledge discovery in 
 databases. I implemented this as a learning example for recursive tree algorithms.
 
+
 **The main code only uses built-in python libraries and has no dependencies**.
 
 You can find the used example [here](https://www.mygreatlearning.com/blog/understanding-fp-growth-algorithm/).
