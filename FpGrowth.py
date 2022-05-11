@@ -126,7 +126,6 @@ class Node(object):
 
         :param parent: the parent node in the tree.
         :param value: the value of the current node.
-        :param base_value: the support of a conditional base node
         """
 
         # save the values
