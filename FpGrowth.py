@@ -411,12 +411,17 @@ def fp_growth(table: list[list[str]], min_support=0.5):
     return frequent_patterns
 
 
-def example_use():
-    dataset = [['Milk', 'Onion', 'Nutmeg', 'Kidney Beans', 'Eggs', 'Yogurt'],
-               ['Dill', 'Onion', 'Nutmeg', 'Kidney Beans', 'Eggs', 'Yogurt'],
-               ['Milk', 'Apple', 'Kidney Beans', 'Eggs'],
-               ['Milk', 'Unicorn', 'Corn', 'Kidney Beans', 'Yogurt'],
-               ['Corn', 'Onion', 'Onion', 'Kidney Beans', 'Ice cream', 'Eggs']]
+def example_1():
+    # data from the example in https://www.mygreatlearning.com/blog/understanding-fp-growth-algorithm/
+    dataset = [['B', 'A', 'T'],
+               ['A', 'C'],
+               ['A', 'S'],
+               ['B', 'A', 'C'],
+               ['B', 'S'],
+               ['A', 'S'],
+               ['B', 'S'],
+               ['B', 'A', 'S', 'T'],
+               ['B', 'A', 'S']]
 
     # get the results
     result = fp_growth(dataset, min_support=0.2)
@@ -425,5 +430,21 @@ def example_use():
     pretty_print_frequent_patterns(result, len(dataset))
 
 
+def example_2():
+    # data from http://rasbt.github.io/mlxtend/user_guide/frequent_patterns/fpgrowth/
+    # Note the double onion buy in the last transaction
+    dataset = [['Milk', 'Onion', 'Nutmeg', 'Kidney Beans', 'Eggs', 'Yogurt'],
+               ['Dill', 'Onion', 'Nutmeg', 'Kidney Beans', 'Eggs', 'Yogurt'],
+               ['Milk', 'Apple', 'Kidney Beans', 'Eggs'],
+               ['Milk', 'Unicorn', 'Corn', 'Kidney Beans', 'Yogurt'],
+               ['Corn', 'Onion', 'Onion', 'Kidney Beans', 'Ice cream', 'Eggs']]
+
+    # get the results
+    result = fp_growth(dataset, min_support=0.45)
+
+    # pretty print the results
+    pretty_print_frequent_patterns(result, len(dataset))
+
+
 if __name__ == '__main__':
-    example_use()
+    example_1()
