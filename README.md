@@ -1,5 +1,5 @@
 ![Banner](images/banner.jpg)
-# FP Growth
+# Pure Python FP Growth
 This project is a simple and pure Python implementation of the FP-Grwoth algorithm used for knowledge discovery in 
 databases. I implemented this as a learning example for recursive tree algorithms.
 
