@@ -1,7 +1,8 @@
 # this file contains a famous reference library for the fp growth algorithm. It will be used to test my own script.
 import mlxtend.frequent_patterns
 from mlxtend.preprocessing import TransactionEncoder
-from FpGrowth import fp_growth, count_items, pretty_print_frequent_patterns, create_sorted_representation
+from FpGrowth import fp_growth, pythonic_count_items, fast_count_items, pretty_print_frequent_patterns, \
+    create_sorted_representation
 import deepdiff
 from time import perf_counter
 import tempfile
@@ -13,6 +14,7 @@ import requests
 import re
 import fpgrowth_py
 from csv import reader
+import timeit
 
 
 def get_from_csv(path='data.csv') -> list[list[str]]:
@@ -128,7 +130,7 @@ def get_mlxtend_result(dataset, min_support=0.5):
     result = mlxtend.frequent_patterns.fpgrowth(df, min_support=min_support, use_colnames=True)
 
     # make the counter
-    counter, number_of_transactions = count_items([list(set(transaction)) for transaction in dataset])
+    counter, number_of_transactions = fast_count_items([list(set(transaction)) for transaction in dataset])
     # make frequent pattern dict from the result
     frequent_patterns = {pattern['itemsets']: round(pattern['support'] * number_of_transactions)
                          for _, pattern in result.iterrows()}
@@ -166,7 +168,7 @@ def test_own_algorithm(dataset: list[list], min_support=0.2, verbose=False):
     # https://towardsdatascience.com/fp-growth-frequent-pattern-generation-in-data-mining-with-python-implementation-244e561ab1c3
     # https://github.com/chonyy/fpgrowth_py
     timed = perf_counter()
-    second_result, _ = fpgrowth_py.fpgrowth(dataset, minSupRatio=min_support, minConf=0)
+    # second_result, _ = fpgrowth_py.fpgrowth(dataset, minSupRatio=min_support, minConf=0)
     second_time = perf_counter() - timed
 
     # compare reference with own implementation ------------------------------------------------------------------------
@@ -216,8 +218,28 @@ def main():
     test_own_algorithm(dataset3, min_support=0.2)
     test_own_algorithm(dataset4, min_support=0.02, verbose=True)
     test_own_algorithm(dataset4, min_support=0.005)
+    test_own_algorithm(dataset4, min_support=0.002)
     test_own_algorithm(dataset5, min_support=0.15)
+
+
+def test_count_items(number_of_runs=10):
+
+    # get a big dataset
+    dataset = get_from_csv()
+
+    # run both functions and add times
+    pythonic_time = timeit.timeit(lambda: pythonic_count_items(dataset), number=number_of_runs)
+    fast_time = timeit.timeit(lambda: fast_count_items(dataset), number=number_of_runs)
+
+    # print timing results
+    print(f'\nThe counter functions took {fast_time:0.3f} s (fast implementation)'
+          f' and {pythonic_time:0.3f} s (pythonic implementations) for over all {number_of_runs} runs.')
+
+    # compare results to make sure they work
+    if not pythonic_count_items(dataset) == fast_count_items(dataset):
+        raise ValueError('Counting functions are different!')
 
 
 if __name__ == '__main__':
     main()
+    test_count_items()
