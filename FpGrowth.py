@@ -102,14 +102,28 @@ class Node(object):
         :param value: the item name
         :return: the child node
         """
-        if value not in self.children:
-            self.children[value] = Node(self, value)
 
-        # go through tree and check if it is singular (no splits other than at root)
-        if len(self.children) > 1:
-            self.not_singular()
+        # try to get the child from dict of children
+        child = self.children.get(value)
 
-        return self.children[value]
+        # create child and check singularity if we have more than one child after creation
+        if child is None:
+
+            # create child
+            child = Node(self, value)
+
+            # save child in dict of children
+            self.children[value] = child
+
+            # as tree can only go from singular -> not singular, we only need to check the children number if tree is
+            # still singular.
+            if self. singular and len(self.children) > 1:
+
+                # set self and all others to not singular
+                self.not_singular()
+
+        # return the child node that has either been created or found in children dict
+        return child
 
     def increment(self):
         """
