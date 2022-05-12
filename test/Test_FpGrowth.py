@@ -263,6 +263,6 @@ def test_speed(number_of_runs=10):
 
 
 if __name__ == '__main__':
-    # main()
+    main()
     # test_count_items()
-    test_speed()
+    # test_speed()
