@@ -3,6 +3,7 @@
 from collections import Counter, OrderedDict, defaultdict
 from itertools import combinations
 from math import ceil
+from typing import Union
 
 
 def pythonic_count_items(table: list[list[str]]) -> [dict, int]:
@@ -248,7 +249,8 @@ def construct_tree(table: list[list[str]], start_node_name: tuple = None, min_su
     return base_node, head_table, counter
 
 
-def count_frequent_patterns(table: list[list], condition: list = None, min_support=0, frequent_patterns: dict = None):
+def count_frequent_patterns(table: list[Union[list, set]], condition: list = None, min_support=0,
+                            frequent_patterns: dict = None):
     """
     This function recursively counts frequent patterns. It is able to support conditional trees.
 
@@ -446,7 +448,7 @@ def fp_growth(table: list[list[str]], min_support=0.5):
                                           f' Current type: {type(item)} for table[{trans_counter}][{item_counter}].'
 
     # take care of double orders in the table
-    table = [list(set(transaction)) for transaction in table]
+    table = [set(transaction) for transaction in table]
 
     # start the frequent pattern counter
     frequent_patterns = count_frequent_patterns(table, min_support=ceil(len(table) * min_support))
