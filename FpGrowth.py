@@ -5,19 +5,39 @@ from itertools import combinations
 from math import ceil
 
 
-def count_items(table: list[list[str]]) -> [OrderedDict, int]:
+def pythonic_count_items(table: list[list[str]]) -> [dict, int]:
     """
     This function creates a dictionary that contains counts for all the items in the transactions.
 
-    :param table: list of transactions
-    :return: Returns an ordered dict for all items in descending item count order
+    :param table: list of transactions, where transaction is list of item
+    :return: Returns a dict for all items
     """
 
     # flatten the two-dimensional list (and take care of double orders by using the count
     all_items = [item for sublist in table for item in sublist]
 
     # count occurrences and sort them by descending counter
-    counter = OrderedDict(Counter(all_items).most_common())
+    counter = Counter(all_items)
+
+    return counter, len(table)
+
+
+def fast_count_items(table: list[list[str]]) -> [dict, int]:
+    """
+    This function creates a dictionary that contains counts for all the items in the transactions. This function is
+    slightly faster than the more pythonic version.
+
+    :param table: list of transactions, where transaction is list of item
+    :return: Returns a dict for all items
+    """
+
+    # create default dict with zeros as default
+    counter = defaultdict(int)
+
+    # iterate through the two-dimensional list
+    for transaction in table:
+        for item in transaction:
+            counter[item] += 1
 
     return counter, len(table)
 
@@ -192,7 +212,7 @@ def construct_tree(table: list[list[str]], start_node_name: tuple = None, min_su
     """
 
     # get the ordered counter for this table
-    counter, number = count_items(table)
+    counter, number = fast_count_items(table)
 
     # delete items with low support form the transactions
     table, counter = delete_items_with_no_support(table, counter, min_support)
