@@ -222,6 +222,12 @@ def main():
 
 
 def test_count_items(number_of_runs=10):
+    """
+    This function was used to compare different item counter functions.
+
+    :param number_of_runs: how many times the functions should be run for comparison
+    :return: None
+    """
 
     # get a big dataset
     dataset = get_from_csv()
@@ -239,6 +245,24 @@ def test_count_items(number_of_runs=10):
         raise ValueError('Counting functions are different!')
 
 
+def test_speed(number_of_runs=10):
+    """
+    This function was used to get a runtime estimate for the own implementation in order to compare optimizations.
+
+    :param number_of_runs: how many times the functions should be run for comparison
+    :return: None
+    """
+    # get a big dataset
+    dataset = get_from_csv()
+
+    # make the algorithm
+    algorithm_time = timeit.timeit(lambda: fp_growth(dataset, min_support=0.15), number=number_of_runs)
+
+    # make the print
+    print(f'The algorithm took {algorithm_time:0.5f} s for {number_of_runs} runs.')
+
+
 if __name__ == '__main__':
-    main()
-    test_count_items()
+    # main()
+    # test_count_items()
+    test_speed()
