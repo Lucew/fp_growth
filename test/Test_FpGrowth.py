@@ -1,7 +1,7 @@
 # this file contains a famous reference library for the fp growth algorithm. It will be used to test my own script.
 import mlxtend.frequent_patterns
 from mlxtend.preprocessing import TransactionEncoder
-from FpGrowth import fp_growth, count_items, sort_frequent_pattern_names, pretty_print_frequent_patterns
+from FpGrowth import fp_growth, count_items, pretty_print_frequent_patterns, create_sorted_representation
 import deepdiff
 from time import perf_counter
 import tempfile
@@ -134,7 +134,7 @@ def get_mlxtend_result(dataset, min_support=0.5):
                          for _, pattern in result.iterrows()}
 
     # sort the frequent patterns
-    frequent_patterns = sort_frequent_pattern_names(frequent_patterns, counter)
+    frequent_patterns = create_sorted_representation(frequent_patterns, counter)
 
     return frequent_patterns
 

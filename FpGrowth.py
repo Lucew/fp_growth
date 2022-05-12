@@ -62,7 +62,7 @@ def delete_items_with_no_support(table: list[list[str]], counter: dict, min_supp
     return new_table, counter
 
 
-def sort_frequent_pattern_names(frequent_patterns: dict, counter: dict) -> dict:
+def create_sorted_representation(frequent_patterns: dict, counter: dict) -> dict:
     """
     This function sort the frequent pattern names according to their counter
     :param frequent_patterns: a dict with frequent patterns as key and support as value
@@ -160,13 +160,12 @@ class Node(object):
         return self.pretty_print()
 
 
-def construct_tree(table: list[list[str]], start_node_name: tuple = None, condition_support=0, min_support=0):
+def construct_tree(table: list[list[str]], start_node_name: tuple = None, min_support=0):
     """
     This function creates a transaction tree for the fp growth algorithm.
 
     :param table: list of transactions.
     :param start_node_name: a name of the start node in order to support conditional trees.
-    :param condition_support: the support of the current condition for conditional trees.
     :param min_support: the given minimal support for the fp growth algorithm
     :return: the base node, the corresponding head table, the counter dict
     """
@@ -208,21 +207,19 @@ def construct_tree(table: list[list[str]], start_node_name: tuple = None, condit
     return base_node, head_table, counter
 
 
-def count_frequent_patterns(table: list[list], condition: list = None, condition_support=0, min_support=0,
-                            frequent_patterns: dict = None):
+def count_frequent_patterns(table: list[list], condition: list = None, min_support=0, frequent_patterns: dict = None):
     """
     This function recursively counts frequent patterns. It is able to support conditional trees.
 
     :param table: the table of transactions
     :param condition: the condition for the current tree
-    :param condition_support: the support of the current condition
     :param min_support: the minimal support as int
     :param frequent_patterns: the dict of frequent patterns where the keys are frequent items and values are numbers
     :return: dict of frequent patterns with their support values
     """
 
     # build the first tree
-    tree, head_table, counter = construct_tree(table, condition, condition_support, min_support=min_support)
+    tree, head_table, counter = construct_tree(table=table, start_node_name=condition, min_support=min_support)
 
     # dict to save the frequent patterns
     if frequent_patterns is None:
@@ -239,10 +236,10 @@ def count_frequent_patterns(table: list[list], condition: list = None, condition
         node_list = list(head_table.keys())
 
         # make all the combinations from the child nodes in the conditional tree
-        for n in range(1, len(node_list) + 1):
+        for combination_length in range(1, len(node_list) + 1):
 
             # get the combinations
-            combis = combinations(node_list, n)
+            combis = combinations(node_list, combination_length)
 
             # go through all combinations and look for the lowest number as support value
             for combi in combis:
@@ -259,54 +256,59 @@ def count_frequent_patterns(table: list[list], condition: list = None, condition
                     # add condition to the item combination
                     combi = tree.value + list(combi)
 
-                # add combination to list and use frozensets as keys as they are unordered and hashable
+                # add combination to list and use frozen sets as keys as they are unordered and hashable
                 # https://stackoverflow.com/questions/46633065/multiples-keys-dictionary-where-key-order-doesnt-matter
                 frequent_patterns[frozenset(combi)] += support
 
     # recursively construct conditional trees if the current tree is not singular
     else:
 
-        # go through all items in the header table
+        # build all conditional trees (conditions coming from the head table)
         for item in head_table:
 
-            # make conditional transactions
+            # initialize conditional transaction table
             conditional_table = []
 
             # iterate through all paths for one item and keep track of the condition support
-            current_condition_support = sum([node.counter for node in head_table[item]])
-
+            current_condition_support = 0
             for node in head_table[item]:
 
                 # save the node counter of the lowest node in transaction path
                 node_counter = node.counter
 
-                # build one transaction
+                # add the counter of the current transaction path to the overall support of the current condition
+                current_condition_support += node_counter
+
+                # initialize empty transaction
                 transaction = []
 
                 # get our parent node and check whether it is not root (parent node parents is not None)
                 while node.parent.parent is not None:
+
+                    # add parent node (higher support item) to our transaction at position zero to keep the transactions
+                    # ordered
                     transaction.insert(0, node.parent.value)
+
+                    # set our node to the parent node
                     node = node.parent
 
                 # append the transaction n times (defined by last child node in one transaction)
-                # also make sure the transaction gets deep copied (list[:])
+                # as we are just counting we can just add references to our transaction multiple times to save memory
                 if transaction:
                     conditional_table += [transaction] * node_counter
 
-            # sort the new condition
-            # new_condition = sort_items(condition + [item], base_counter)
+            # make the new condition for the conditional tree
             new_condition = condition + [item]
 
-            # once we do construct a subtree, we need to add the condition to the counter and use frozensets as keys as
+            # once we do construct a subtree, we need to add the condition to the counter and use frozen sets as keys as
             # they are unordered and hashable
             # https://stackoverflow.com/questions/46633065/multiples-keys-dictionary-where-key-order-doesnt-matter
             frequent_patterns[frozenset(new_condition)] += current_condition_support
 
             # call function recursively to build and traverse the next tree,
-            # but now it is conditioned on certain items with a certain support
+            # but now it is conditioned on our new condition
             _ = count_frequent_patterns(conditional_table,
                                         condition=new_condition,
-                                        condition_support=current_condition_support,
                                         min_support=min_support,
                                         frequent_patterns=frequent_patterns)
 
@@ -314,7 +316,7 @@ def count_frequent_patterns(table: list[list], condition: list = None, condition
     # have no condition
     if not condition:
         # sort the frequent patterns to correct string representation
-        frequent_patterns = sort_frequent_pattern_names(frequent_patterns, counter)
+        frequent_patterns = create_sorted_representation(frequent_patterns, counter)
 
     return frequent_patterns
 
