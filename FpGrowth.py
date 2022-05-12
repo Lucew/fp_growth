@@ -141,9 +141,16 @@ class Node(object):
 
         :return: None
         """
-        self.singular = False
-        if self.parent is not None:
-            self.parent.not_singular()
+        # as the tree can only go from singular -> not singular, the first if saves functions calls in case we encounter
+        # the first already not singular part of tree
+        if self.singular:
+
+            # set self to not singular
+            self.singular = False
+
+            # iteratively go up the tree
+            if self.parent is not None:
+                self.parent.not_singular()
 
     def pretty_print(self, heading='1.', start_str=""):
         """
