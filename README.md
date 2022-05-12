@@ -10,7 +10,7 @@
     <a target="_blank" href="https://makeapullrequest.com" title="PRs Welcome"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt=""></a>
 </p>
 
-# Pure Python FP Growth
+# Performant and Pure Python FP Growth
 This project is a simple and pure Python implementation of the FP-Grwoth algorithm used for knowledge discovery in 
 databases. I implemented this as a learning example for recursive tree algorithms.
 
@@ -51,7 +51,7 @@ You can also introduce your own tests by using the `test_own_algorithm` function
 
 # Performance comparison
 
-This implementation is slightly faster than the Mlxtend implementation (~1.5x). But this might be due to the
+This implementation is slightly faster than the Mlxtend implementation (~1.5x-2x). But this might be due to the
 conversion of the data list to a pandas dataframe and the transformation and ordering of the result to support 
 direct comparison. Imho one could say performance is comparable.
 
