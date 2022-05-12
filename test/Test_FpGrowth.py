@@ -168,7 +168,7 @@ def test_own_algorithm(dataset: list[list], min_support=0.2, verbose=False):
     # https://towardsdatascience.com/fp-growth-frequent-pattern-generation-in-data-mining-with-python-implementation-244e561ab1c3
     # https://github.com/chonyy/fpgrowth_py
     timed = perf_counter()
-    # second_result, _ = fpgrowth_py.fpgrowth(dataset, minSupRatio=min_support, minConf=0)
+    second_result, _ = fpgrowth_py.fpgrowth(dataset, minSupRatio=min_support, minConf=0)
     second_time = perf_counter() - timed
 
     # compare reference with own implementation ------------------------------------------------------------------------
@@ -218,7 +218,6 @@ def main():
     test_own_algorithm(dataset3, min_support=0.2)
     test_own_algorithm(dataset4, min_support=0.02, verbose=True)
     test_own_algorithm(dataset4, min_support=0.005)
-    test_own_algorithm(dataset4, min_support=0.002)
     test_own_algorithm(dataset5, min_support=0.15)
 
 
