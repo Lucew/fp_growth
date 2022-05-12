@@ -76,7 +76,7 @@ def create_sorted_representation(frequent_patterns: dict, counter: dict) -> dict
 class Node(object):
 
     # add slots to impede the creation of object __dict__ in order to reduce the memory footprint of each tree
-    # comes with the cost du not store attributes dynamically, but we don't need that anyway.
+    # comes with the cost of not being able to store attributes dynamically, but we don't need that anyway.
     __slots__ = 'parent', 'value', 'children', 'counter', 'singular'
 
     def __init__(self, parent, value):
