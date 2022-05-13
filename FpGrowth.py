@@ -202,7 +202,7 @@ class Node(object):
         return self.pretty_print()
 
 
-def construct_tree(table: list[list[str]], start_node_name: tuple = None, min_support=0):
+def construct_tree(table: list[list[str]], start_node_name: tuple = None, min_support=0) -> [Node, dict, dict]:
     """
     This function creates a transaction tree for the fp growth algorithm.
 
