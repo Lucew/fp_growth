@@ -56,7 +56,7 @@ def sort_transactions(table: list[list[str]], counter: dict) -> list[list[str]]:
 def sort_items(transaction: list[str], counter: dict) -> list[str]:
     """
     This functions sorts a list of items in the transaction according to the counter and their names (in order to
-    keep from ambiguous sorting if the counter of two items is equal.
+    keep from ambiguous sorting if the counter of two items is equal).
     :param transaction: list of items as strings
     :param counter: a dictionary that holds the number of items in the transaction
     :return: sorted list of items in descending amount
@@ -70,9 +70,9 @@ def delete_items_with_no_support(table: list[list[str]], counter: dict, min_supp
     This function deletes transactions from the list of transactions if their support is not big enough.
 
     :param table: a two-dimensional list of transactions where each transaction is a list of times
-    :param counter: a dictionary that counts the number of participations of each item
+    :param counter: a dictionary that counts the number of participation of each item
     :param min_support: the minimum support used for this dataset
-    :return: the cleaned list of transcations
+    :return: the cleaned list of transactions
     """
     # delete non frequent items from counter
     counter = OrderedDict([(item, number) for item, number in counter.items() if number >= min_support])
@@ -175,7 +175,7 @@ class Node(object):
 
     def pretty_print(self, heading='1.', start_str=""):
         """
-        This function creates a nicely formatted string of the current node and it's childs.
+        This function creates a nicely formatted string of the current node, and it's children.
 
         :param heading: The starting heading for the representation.
         :param start_str: The appendix for every line of the tree.
@@ -431,7 +431,7 @@ def fp_growth(table: list[list[str]], min_support=0.5, check_dataset=False) -> d
     This function implements the fp growth algorithm. The items in the transactions need be given as a string
     representation!
 
-    :param table: a list of transactions (list of lists, where the second level list is a list of items per transation)
+    :param table: a list of transactions (list of lists, where the second level list is a list of items per transaction)
     :param min_support: the minimum support for frequent patters in percentage (between 0 and 1)
     :param check_dataset: checks the dataset for the right type. Turning on come with performance cost.
     :return: a dict of frequent patterns
