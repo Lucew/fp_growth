@@ -293,7 +293,7 @@ def count_frequent_patterns(table: list[Union[list, set]], condition: list = Non
                 for item in combi:
                     support = min(support, sum([node.counter for node in head_table[item]]))
 
-                # build the combination as key for the dict
+                # check whether the tree is conditioned
                 if tree.value is not None:
 
                     # add condition to the item combination
