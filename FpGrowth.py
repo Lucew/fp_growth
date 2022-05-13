@@ -250,7 +250,7 @@ def construct_tree(table: list[list[str]], start_node_name: tuple = None, min_su
 
 
 def count_frequent_patterns(table: list[Union[list, set]], condition: list = None, min_support=0,
-                            frequent_patterns: dict = None):
+                            frequent_patterns: dict = None) -> dict:
     """
     This function recursively counts frequent patterns. It is able to support conditional trees.
 
@@ -365,7 +365,7 @@ def count_frequent_patterns(table: list[Union[list, set]], condition: list = Non
 
 
 def pretty_print_frequent_patterns(frequent_patterns: dict, number_of_transactions: int, percentage_precision=2,
-                                   sorted_print=True):
+                                   sorted_print=True) -> None:
     """
     This function prints a human-readable version of the frequent patterns from the fp growth algorithm.
 
@@ -426,7 +426,7 @@ def pretty_print_frequent_patterns(frequent_patterns: dict, number_of_transactio
     print(print_string)
 
 
-def fp_growth(table: list[list[str]], min_support=0.5, check_dataset=False):
+def fp_growth(table: list[list[str]], min_support=0.5, check_dataset=False) -> dict:
     """
     This function implements the fp growth algorithm. The items in the transactions need be given as a string
     representation!
